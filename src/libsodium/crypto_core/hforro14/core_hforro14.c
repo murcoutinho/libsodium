@@ -46,18 +46,6 @@ int crypto_core_hforro14(unsigned char *out, const unsigned char *in,
     x12 = LOAD32_LE(in + 8);
     x13 = LOAD32_LE(in + 12);
 
-    for (i = 0; i < 10; i++)
-    {
-        QUARTERROUND(x0, x4, x8, x12);
-        QUARTERROUND(x1, x5, x9, x13);
-        QUARTERROUND(x2, x6, x10, x14);
-        QUARTERROUND(x3, x7, x11, x15);
-        QUARTERROUND(x0, x5, x10, x15);
-        QUARTERROUND(x1, x6, x11, x12);
-        QUARTERROUND(x2, x7, x8, x13);
-        QUARTERROUND(x3, x4, x9, x14);
-    }
-
     for (i = 0; i < rounds; i++)
     {
         Q(x0,x4,x8,x12,x3);
