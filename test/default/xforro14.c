@@ -1,7 +1,23 @@
 
 #define TEST_NAME "xforro14"
 #include "cmptest.h"
+#include <stdio.h>
 
+// --------------------
+static void
+print_buffer_hex(FILE *fp, const unsigned char *buffer, size_t length)
+{
+    size_t i;
+
+    for (i = 0; i < length; i++)
+    {
+        fprintf(fp, "%02x", buffer[i]);
+    }
+
+    fprintf(fp, "\n");
+}
+
+// --------------------
 typedef struct Hforro14TV_
 {
     const char key[crypto_core_hforro14_KEYBYTES * 2 + 1];
@@ -18,16 +34,16 @@ static void
 tv_hforro14(void)
 {
     static const Hforro14TV tvs[] = {
-        {"24f11cce8a1b3d61e441561a696c1c1b7e173d084fd4812425435a8896a013dc", "d9660c5900ae19ddad28d6e06e45fe5e", "5966b3eec3bff1189f831f06afe4d4e3be97fa9235ec8c20d08acfbbb4e851e3"},
-        {"80a5f6272031e18bb9bcd84f3385da65e7731b7039f13f5e3d475364cd4d42f7", "c0eccc384b44c88e92c57eb2d5ca4dfa", "6ed11741f724009a640a44fce7320954c46e18e0d7ae063bdbc8d7cf372709df"},
-        {"cb1fc686c0eec11a89438b6f4013bf110e7171dace3297f3a657a309b3199629", "fcd49b93e5f8f299227e64d40dc864a3", "84b7e96937a1a0a406bb7162eeaad34308d49de60fd2f7ec9dc6a79cbab2ca34"},
-        {"6640f4d80af5496ca1bc2cfff1fefbe99638dbceaabd7d0ade118999d45f053d", "31f59ceeeafdbfe8cae7914caeba90d6", "9af4697d2f5574a44834a2c2ae1a0505af9f5d869dbe381a994a18eb374c36a0"},
-        {"0693ff36d971225a44ac92c092c60b399e672e4cc5aafd5e31426f123787ac27", "3a6293da061da405db45be1731d5fc4d", "f87b38609142c01095bfc425573bb3c698f9ae866b7e4216840b9c4caf3b0865"},
-        {"809539bd2639a23bf83578700f055f313561c7785a4a19fc9114086915eee551", "780c65d6a3318e479c02141d3f0b3918", "902ea8ce4680c09395ce71874d242f84274243a156938aaa2dd37ac5be382b42"},
-        {"1a170ddf25a4fd69b648926e6d794e73408805835c64b2c70efddd8cd1c56ce0", "05dbee10de87eb0c5acb2b66ebbe67d3", "a4e20b634c77d7db908d387b48ec2b370059db916e8ea7716dc07238532d5981"},
-        {"3b354e4bb69b5b4a1126f509e84cad49f18c9f5f29f0be0c821316a6986e15a6", "d8a89af02f4b8b2901d8321796388b6c", "9816cb1a5b61993735a4b161b51ed2265b696e7ded5309c229a5a99f53534fbc"},
-        {"4b9a818892e15a530db50dd2832e95ee192e5ed6afffb408bd624a0c4e12a081", "a9079c551de70501be0286d1bc78b045", "ebc5224cf41ea97473683b6c2f38a084bf6e1feaaeff62676db59d5b719d999b"},
-        {"c49758f00003714c38f1d4972bde57ee8271f543b91e07ebce56b554eb7fa6a7", "31f0204e10cf4f2035f9e62bb5ba7303", "0dd8cc400f702d2c06ed920be52048a287076b86480ae273c6d568a2e9e7518c"}};
+        {"fb5c38aeebfbf405f0a60b2296bfdf1a07b556fbc32ccb65b7a21de1b0fb007b", "6863370d90ce0bde35aec0088feace1a", "9ccfdfdf400d0de0d5dec1229b1cea3eb6392c0d89d345bffdd0382cf39e2cf7"},
+        {"18c34ee0ed3cf9bd9de5793b322a49427f57a86ac336b4ec1a1795aaeb20a252", "e362bcad548ac003aad3ba46ef1607e1", "5317d3b641940c2a471b776295f81f48668a5181b96e034e2293fbf893fca455"},
+        {"b37953420d6b02c5040ea748e132df76f7d155823f5d97763461b424034e1478", "5bd935c83d133210d9de9aae9d651441", "3d198914d01242f147b9340edc1ac8ecb176696b3a69bc5ac7b51dc59040685c"},
+        {"9bff51f895dd2da93864f43525eec5d62e8e83f5f5b5c682e520f6f2d7498937", "65530a0cbde7e040c891db5ff6008d2d", "1333aadaf4c90710a97b9facbbf4ac99ee30043682ffdedc1d69775be2b0ba09"},
+        {"0809d203ed3571ff3aa4ec4f6fc1de10b92e87c76f4b4ffdfad8fe37381d9d67", "8aa6100dda567d04614db23e38e548db", "64230964ce353b7886adf65f128dec980df7a5ff626c284e187848336a79e7fa"},
+        {"1eb598146ce623ad2f9862d71f7ac79ea7e4731b794ed28e32a8327831364309", "3ad23370a9be92f5c0e316f041becef6", "3ff7dde95bc81a01846c8a63d4c476ec82ac2b2006ef72a73948ca90cad543f9"},
+        {"6b0ab6913ac0be730e2a55df94a25de7ee45df5bb12e39e82d5ecc89e06835a5", "30c3e2daf14197054dc24097747cdecc", "15951461ee9144e6ad2231711156eb537a7e29c475e7fcbe2118f0c000b05735"},
+        {"342b874ca9a4103c1b4d7c1435a602fd7e6e31f3352468fb4d6d3635cf887f66", "41fa687d949788ca4305f4118d068150", "f101b37cf0b2e2af9a4fe98c098a5ccf6c8a4565647c0f30cc9c59ae6c03e1fb"},
+        {"2b90f875fc53683fa2bb3c0f592f2040ed0bb3db5e63817e15312518d7d0c458", "a255722a92b7c63f1292f4fef8cb0146", "0ec210f21643955859c28cec1721424ab1bd987b1a383401d91699999c424bf2"},
+        {"be875e8fd7ac02a9dd861b0f0c9be1b9c2df0dcbe131536ad0d08cde49de6e77", "7b155d82389c755f53ee85194da1c08f", "5759804ebdb0fa3e622bbddbc2490a14d6bf25211910636ec168f2a086cd4134"}};
     const Hforro14TV *tv;
     unsigned char *constant;
     unsigned char *key;
@@ -41,6 +57,7 @@ tv_hforro14(void)
     in = (unsigned char *)sodium_malloc(crypto_core_hforro14_INPUTBYTES);
     out = (unsigned char *)sodium_malloc(crypto_core_hforro14_OUTPUTBYTES);
     out2 = (unsigned char *)sodium_malloc(crypto_core_hforro14_OUTPUTBYTES);
+
     for (i = 0; i < (sizeof tvs) / (sizeof tvs[0]); i++)
     {
         tv = &tvs[i];
@@ -50,25 +67,9 @@ tv_hforro14(void)
                        tv->in, strlen(tv->in), NULL, NULL, NULL);
         sodium_hex2bin(out, crypto_core_hforro14_OUTPUTBYTES,
                        tv->out, strlen(tv->out), NULL, NULL, NULL);
-        crypto_core_hforro14(out2, in, key, NULL);
+        crypto_core_hforro14(out2, in, key);
         assert(memcmp(out, out2, crypto_core_hforro14_OUTPUTBYTES) == 0);
     }
-
-    sodium_hex2bin(constant, crypto_core_hforro14_CONSTBYTES,
-                   "0d29b795c1ca70c1652e823364d32417",
-                   crypto_core_hforro14_CONSTBYTES * 2 + 1, NULL, NULL, NULL);
-    sodium_hex2bin(out, crypto_core_hforro14_OUTPUTBYTES,
-                   "934d941d78eb9bfc2f0376f7ccd4a11ecf0c6a44104618a9749ef47fe97037a2",
-                   crypto_core_hforro14_OUTPUTBYTES * 2 + 1, NULL, NULL, NULL);
-
-    crypto_core_hforro14(out2, in, key, constant);
-    assert(memcmp(out, out2, crypto_core_hforro14_OUTPUTBYTES) == 0);
-
-    sodium_free(out2);
-    sodium_free(out);
-    sodium_free(in);
-    sodium_free(key);
-    sodium_free(constant);
 
     assert(crypto_core_hforro14_outputbytes() == crypto_core_hforro14_OUTPUTBYTES);
     assert(crypto_core_hforro14_inputbytes() == crypto_core_hforro14_INPUTBYTES);
@@ -91,16 +92,16 @@ static void
 tv_stream_xforro14(void)
 {
     static const Xforro14TV tvs[] = {
-        {"79c99798ac67300bbb2704c95c341e3245f3dcb21761b98e52ff45b24f304fc4", "b33ffd3096479bcfbc9aee49417688a0a2554f8d95389419", "c6e9758160083ac604ef90e712ce6e75d7797590744e0cf060f013739c"},
-        {"ddf7784fee099612c40700862189d0397fcc4cc4b3cc02b5456b3a97d1186173", "a9a04491e7bf00c3ca91ac7c2d38a777d88993a7047dfcc4", "2f289d371f6f0abc3cb60d11d9b7b29adf6bc5ad843e8493e928448d"},
-        {"3d12800e7b014e88d68a73f0a95b04b435719936feba60473f02a9e61ae60682", "56bed2599eac99fb27ebf4ffcb770a64772dec4d5849ea2d", "a2c3c1406f33c054a92760a8e0666b84f84fa3a618f0"},
-        {"5f5763ff9a30c95da5c9f2a8dfd7cc6efd9dfb431812c075aa3e4f32e04f53e4", "a5fa890efa3b9a034d377926ce0e08ee6d7faccaee41b771", "8a1a5ba898bdbcff602b1036e469a18a5e45789d0e8d9837d81a2388a52b0b6a0f51891528f424c4a7f492a8dd7bce8bac19fbdbe1fb379ac0"},
-        {"eadc0e27f77113b5241f8ca9d6f9a5e7f09eee68d8a5cf30700563bf01060b4e", "a171a4ef3fde7c4794c5b86170dc5a099b478f1b852f7b64", "23839f61795c3cdbcee2c749a92543baeeea3cbb721402aa42e6cae140447575f2916c5d71108e3b13357eaf86f060cb"},
-        {"91319c9545c7c804ba6b712e22294c386fe31c4ff3d278827637b959d3dbaab2", "410e854b2a911f174aaf1a56540fc3855851f41c65967a4e", "cbe7d24177119b7fdfa8b06ee04dade4256ba7d35ffda6b89f014e479faef6"},
-        {"6a6d3f412fc86c4450fc31f89f64ed46baa3256ffcf8616e8c23a06c422842b6", "6b7773fce3c2546a5db4829f53a9165f41b08faae2fb72d5", "8b23e35b3cdd5f3f75525fc37960ec2b68918e8c046d8a832b9838f1546be662e54feb1203e2"},
-        {"d45e56368ebc7ba9be7c55cfd2da0feb633c1d86cab67cd5627514fd20c2b391", "fd37da2db31e0c738754463edadc7dafb0833bd45da497fc", "47950efa8217e3dec437454bd6b6a80a287e2570f0a48b3fa1ea3eb868be3d486f6516606d85e5643becc473b370871ab9ef8e2a728f73b92bd98e6e26ea7c8ff96ec5a9e8de95e1eee9300c"},
-        {"aface41a64a9a40cbc604d42bd363523bd762eb717f3e08fe2e0b4611eb4dcf3", "6906e0383b895ab9f1cf3803f42f27c79ad47b681c552c63", "a5fa7c0190792ee17675d52ad7570f1fb0892239c76d6e802c26b5b3544d13151e67513b8aaa1ac5af2d7fd0d5e4216964324838"},
-        {"9d23bd4149cb979ccf3c5c94dd217e9808cb0e50cd0f67812235eaaf601d6232", "c047548266b7c370d33566a2425cbf30d82d1eaf5294109e", "a21209096594de8c5667b1d13ad93f744106d054df210e4782cd396fec692d3515a20bf351eec011a92c367888bc464c32f0807acd6c203a247e0db854148468e9f96bee4cf718d68d5f637cbd5a376457788e6fae90fc31097cfc"},
+        {"446a5599971cbbc8c4c5379f012be204d73d977af5cfdf18e1c4f6e52bb2f948", "b90ae2af0d3158b0a5625a7330e8d8837a6e3edc294986af", "b70c83c40ac613a5eb6545837caf7add3ef9241d7d31991e2e264670c3"},
+        {"5400df2a2368cd0208707b0d98be2ae1e2f86059262a633bf16385aafbb7355b", "1b04612a71d647e9afbdefa2e8b4246a9f3873a90b7a262f", "5d67739bd8d9e21bbba85f4e244921869110203fbe066491e53d514e"},
+        {"99f2e5cd47bef485725b6e79fa942d11bfd74c064829265cd2518d12e6cce1c3", "02c8f41fa64a64b158b7e8df76ac719ffdb399adc9e47bf4", "85238de592c3db8dcc8fceda6a681ab5e0f0fdd6e9fe"},
+        {"102326ecaef535a79df587c1d42754b9331fc385958f69a5ddf16fe13a3ab47b", "2bbf7a342c717330d79e6c8f729d88169d109972f27c7d92", "0bd5a65501d36c50e61b1aabc37398cbeb83a57e63c81589360878f67121b1b0447c0e5ae5e1a312573e679ceb763004441ced9d1f3511f732"},
+        {"2002c6fd52320bcc96bb60fb947556448033c377ca6319e200e5bcd90952f418", "eeacd80edb362c44c12d4c91e9043e28f4da21b590f99ebc", "cdfe9e63b8d5a7ea3e1d3c363ea10d8497ade15a3c8f73410977beb231fbeb34fdea3352cc6112516b222bbabf28545d"},
+        {"39df4665ba6c0c5bf34f0480640ea6490ffbebef6e7cbc8940e8c6108584351d", "5dfe6d3747bf965b8691a206100c5f5404177f2879eeeb02", "c276f5ad55b319cc2327b4cf95db27c5e07add0e445507eba5a5e2da522d4e"},
+        {"d130c9253c4900d662278106d726b6d2ed849767ca51765e222f1ce5f2085a84", "9b60136a07315bf14eb36748a871cb2ecaac68102a17c388", "dae6a02e5c45f3c50f52cf4e1775dff967aa3ac84ee1a646bf6ec2eae1953bede216f38b36c3"},
+        {"179042a891328da594339db39828b5d3699a838a96b012d7b68976bc8d916fc3", "b6c1d879c52fd5b5ec25b87acd97e94f2ab544e5be5bf98e", "237c17a976e03d9941ea2f41b08946a73f900e527401640cd345364dc1fd695c7164e923bdd545db8ad58fd6f77d70ee5556df85c24f483f857370e3b79f5a9c68895c072e6a6460aacd7013"},
+        {"a759f38844b8ee3398360cf1d775b7ed6ab4a98ed49548681286146aad69c67c", "6bbcbd49d217cb91d0571a9230a14d3566929f03ba10f643", "f87ed8e7f5ab93af06e2ccbf2b3e3b054108285dc7051b26308470f376740fbb857798483a7af12130f8660be82047cdf0f08769"},
+        {"3259b24feaa3a0c0079bef16e5df335e9a6aac9f61602d2bd736ae25f662fe31", "fda7570713c45f69559c1ca725d2bc10723ea972b1e5c77c", "f1cd98ef10ca16a70faf47c75c309fe2c1128f934397bcd04beef6c28b50ce11500086e50b11cd7bf9ecefcb39e1206fadfc7fed0f7cdc8e2da55fdec5ded66595256267b826b792c117ad484d0a83af4b273c9612f50d4b094e43"},
     };
     const Xforro14TV *tv;
     char *hex;
