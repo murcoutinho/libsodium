@@ -6,6 +6,7 @@
         "ios": "c",
         "__node_handle": "c",
         "chrono": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "crypto_core_hforro14.h": "c"
     }
 }
