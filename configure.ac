@@ -951,6 +951,7 @@ AC_CONFIG_FILES([Makefile
                  src/libsodium/include/Makefile
                  src/libsodium/include/sodium/version.h
                  test/default/Makefile
+                 test/speed/Makefile
                  test/Makefile
                  ])
 AC_OUTPUT

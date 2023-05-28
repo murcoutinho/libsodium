@@ -4,6 +4,8 @@
         "__locale": "c",
         "format": "c",
         "ios": "c",
-        "__node_handle": "c"
+        "__node_handle": "c",
+        "chrono": "cpp",
+        "typeinfo": "cpp"
     }
 }
