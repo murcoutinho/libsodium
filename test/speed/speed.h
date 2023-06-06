@@ -101,8 +101,8 @@ static void print(const char *name, uint64_t duration, const char *unit)
     }
     else
     {
-        uint64_t speed_hz = BILLION / duration;
-        printf("%s: %5" PRIu64 " %s\n", name, speed_hz, unit);
+        double speed_hz = BILLION / (double) duration;
+        printf("%s: %5.2f %s\n", name, speed_hz, unit);
     }
 }
 
