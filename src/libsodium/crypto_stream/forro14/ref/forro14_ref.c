@@ -32,6 +32,7 @@ typedef struct forro_ctx forro_ctx;
 #define XOR(v, w) ((v) ^ (w))
 #define PLUS(v, w) (U32V((v) + (w)))
 #define PLUSONE(v) (PLUS((v), 1))
+#define PLUSTWO(v) (PLUS((v), 2))
 
 #define QUARTERROUND(a, b, c, d, e) \
     d = PLUS(d, e);                 \
@@ -85,10 +86,13 @@ forro14_encrypt_bytes(forro_ctx *ctx, const uint8_t *m, uint8_t *c,
 {
     uint32_t x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14,
         x15;
+    uint32_t y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13, y14,
+        y15;
     uint32_t j0, j1, j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13, j14,
         j15;
+    uint32_t k4, k5;
     uint8_t *ctarget = NULL;
-    uint8_t tmp[64];
+    uint8_t tmp[128];
     unsigned int i;
 
     if (!bytes)
@@ -114,9 +118,9 @@ forro14_encrypt_bytes(forro_ctx *ctx, const uint8_t *m, uint8_t *c,
 
     for (;;)
     {
-        if (bytes < 64)
+        if (bytes < 128)
         {
-            memset(tmp, 0, 64);
+            memset(tmp, 0, 128);
             for (i = 0; i < bytes; ++i)
             {
                 tmp[i] = m[i];
@@ -141,16 +145,49 @@ forro14_encrypt_bytes(forro_ctx *ctx, const uint8_t *m, uint8_t *c,
         x13 = j13;
         x14 = j14;
         x15 = j15;
+
+        k4 = j4 + 1;
+        k5 = j5;
+        if (!k4)
+        {
+            k5 = k5 + 1;
+        }
+
+        y0 = j0;
+        y1 = j1;
+        y2 = j2;
+        y3 = j3;
+        y4 = k4;
+        y5 = k5;
+        y6 = j6;
+        y7 = j7;
+        y8 = j8;
+        y9 = j9;
+        y10 = j10;
+        y11 = j11;
+        y12 = j12;
+        y13 = j13;
+        y14 = j14;
+        y15 = j15;
+
         for (i = 14; i > 0; i -= 2)
         {
             QUARTERROUND(x0, x4, x8, x12, x3)
+            QUARTERROUND(y0, y4, y8, y12, y3)
             QUARTERROUND(x1, x5, x9, x13, x0)
+            QUARTERROUND(y1, y5, y9, y13, y0)
             QUARTERROUND(x2, x6, x10, x14, x1)
+            QUARTERROUND(y2, y6, y10, y14, y1)
             QUARTERROUND(x3, x7, x11, x15, x2)
+            QUARTERROUND(y3, y7, y11, y15, y2)
             QUARTERROUND(x0, x5, x10, x15, x3)
+            QUARTERROUND(y0, y5, y10, y15, y3)
             QUARTERROUND(x1, x6, x11, x12, x0)
+            QUARTERROUND(y1, y6, y11, y12, y0)
             QUARTERROUND(x2, x7, x8, x13, x1)
+            QUARTERROUND(y2, y7, y8, y13, y1)
             QUARTERROUND(x3, x4, x9, x14, x2)
+            QUARTERROUND(y3, y4, y9, y14, y2)
         }
         x0 = PLUS(x0, j0);
         x1 = PLUS(x1, j1);
@@ -169,6 +206,23 @@ forro14_encrypt_bytes(forro_ctx *ctx, const uint8_t *m, uint8_t *c,
         x14 = PLUS(x14, j14);
         x15 = PLUS(x15, j15);
 
+        y0 = PLUS(y0, j0);
+        y1 = PLUS(y1, j1);
+        y2 = PLUS(y2, j2);
+        y3 = PLUS(y3, j3);
+        y4 = PLUS(y4, k4);
+        y5 = PLUS(y5, k5);
+        y6 = PLUS(y6, j6);
+        y7 = PLUS(y7, j7);
+        y8 = PLUS(y8, j8);
+        y9 = PLUS(y9, j9);
+        y10 = PLUS(y10, j10);
+        y11 = PLUS(y11, j11);
+        y12 = PLUS(y12, j12);
+        y13 = PLUS(y13, j13);
+        y14 = PLUS(y14, j14);
+        y15 = PLUS(y15, j15);
+
         x0 = XOR(x0, LOAD32_LE(m + 0));
         x1 = XOR(x1, LOAD32_LE(m + 4));
         x2 = XOR(x2, LOAD32_LE(m + 8));
@@ -186,9 +240,26 @@ forro14_encrypt_bytes(forro_ctx *ctx, const uint8_t *m, uint8_t *c,
         x14 = XOR(x14, LOAD32_LE(m + 56));
         x15 = XOR(x15, LOAD32_LE(m + 60));
 
-        j4 = PLUSONE(j4);
+        y0 = XOR(y0, LOAD32_LE(m + 64));
+        y1 = XOR(y1, LOAD32_LE(m + 68));
+        y2 = XOR(y2, LOAD32_LE(m + 72));
+        y3 = XOR(y3, LOAD32_LE(m + 76));
+        y4 = XOR(y4, LOAD32_LE(m + 80));
+        y5 = XOR(y5, LOAD32_LE(m + 84));
+        y6 = XOR(y6, LOAD32_LE(m + 88));
+        y7 = XOR(y7, LOAD32_LE(m + 92));
+        y8 = XOR(y8, LOAD32_LE(m + 96));
+        y9 = XOR(y9, LOAD32_LE(m + 100));
+        y10 = XOR(y10, LOAD32_LE(m + 104));
+        y11 = XOR(y11, LOAD32_LE(m + 108));
+        y12 = XOR(y12, LOAD32_LE(m + 112));
+        y13 = XOR(y13, LOAD32_LE(m + 116));
+        y14 = XOR(y14, LOAD32_LE(m + 120));
+        y15 = XOR(y15, LOAD32_LE(m + 124));
+
+        j4 = PLUSTWO(j4);
         /* LCOV_EXCL_START */
-        if (!j4)
+        if (!(j4 >> 1))
         {
             j5 = PLUSONE(j5);
         }
@@ -211,23 +282,40 @@ forro14_encrypt_bytes(forro_ctx *ctx, const uint8_t *m, uint8_t *c,
         STORE32_LE(c + 56, x14);
         STORE32_LE(c + 60, x15);
 
-        if (bytes <= 64)
+        STORE32_LE(c + 64, y0);
+        STORE32_LE(c + 68, y1);
+        STORE32_LE(c + 72, y2);
+        STORE32_LE(c + 76, y3);
+        STORE32_LE(c + 80, y4);
+        STORE32_LE(c + 84, y5);
+        STORE32_LE(c + 88, y6);
+        STORE32_LE(c + 92, y7);
+        STORE32_LE(c + 96, y8);
+        STORE32_LE(c + 100, y9);
+        STORE32_LE(c + 104, y10);
+        STORE32_LE(c + 108, y11);
+        STORE32_LE(c + 112, y12);
+        STORE32_LE(c + 116, y13);
+        STORE32_LE(c + 120, y14);
+        STORE32_LE(c + 124, y15);
+
+        if (bytes <= 128)
         {
-            if (bytes < 64)
+            if (bytes < 128)
             {
                 for (i = 0; i < (unsigned int)bytes; ++i)
                 {
                     ctarget[i] = c[i]; /* ctarget cannot be NULL */
                 }
             }
-            ctx->input[4] = j4;
-            ctx->input[5] = j5;
+            ctx->input[4] = k4;
+            ctx->input[5] = k5;
 
             return;
         }
-        bytes -= 64;
-        c += 64;
-        m += 64;
+        bytes -= 128;
+        c += 128;
+        m += 128;
     }
 }
 
