@@ -48,14 +48,14 @@ int crypto_core_hforro14(unsigned char *out, const unsigned char *in,
         QUARTERROUND(x3, x4, x9, x14, x2);
     }
 
-    STORE32_LE(out + 0, x4);
-    STORE32_LE(out + 4, x5);
-    STORE32_LE(out + 8, x6);
-    STORE32_LE(out + 12, x7);
-    STORE32_LE(out + 16, x12);
-    STORE32_LE(out + 20, x13);
-    STORE32_LE(out + 24, x14);
-    STORE32_LE(out + 28, x15);
+    STORE32_LE(out + 0, x6);
+    STORE32_LE(out + 4, x7);
+    STORE32_LE(out + 8, x14);
+    STORE32_LE(out + 12, x15);
+    STORE32_LE(out + 16, x4);
+    STORE32_LE(out + 20, x5);
+    STORE32_LE(out + 24, x12);
+    STORE32_LE(out + 28, x13);
 
     return 0;
 }
